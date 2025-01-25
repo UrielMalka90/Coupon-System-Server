@@ -10,6 +10,7 @@ public class ArchimedesApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ArchimedesApplication.class, args);
+    System.out.println("Eureka Server is running...");
 	}
 
 }

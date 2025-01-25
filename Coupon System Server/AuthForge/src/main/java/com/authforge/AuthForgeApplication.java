@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AuthForgeApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(AuthForgeApplication.class, args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(AuthForgeApplication.class, args);
+    System.out.println("AuthForge is running...");
+  }
 }

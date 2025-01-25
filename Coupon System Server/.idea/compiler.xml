@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Archimedes" />
+        <module name="CustomerConnect" />
+        <module name="AuthForge" />
+        <module name="CouponHub" />
+        <module name="guardway" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Archimedes" target="17" />
+      <module name="AuthForge" target="17" />
+      <module name="CouponHub" target="17" />
+      <module name="CustomerConnect" target="17" />
+      <module name="guardway" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Archimedes" options="-parameters" />
+      <module name="AuthForge" options="-parameters" />
+      <module name="CouponHub" options="-parameters" />
+      <module name="CustomerConnect" options="-parameters" />
+      <module name="guardway" options="-parameters" />
+    </option>
+  </component>
+</project>

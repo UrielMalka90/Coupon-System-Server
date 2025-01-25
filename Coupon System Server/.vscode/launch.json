@@ -1,0 +1,35 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "CouponHubApplication",
+      "request": "launch",
+      "mainClass": "com.example.couponhub.CouponHubApplication",
+      "projectName": "CouponHub"
+    },
+    {
+      "type": "java",
+      "name": "GuardwayApplication",
+      "request": "launch",
+      "mainClass": "com.example.guardway.GuardwayApplication",
+      "projectName": "guardway"
+    },
+    {
+      "type": "java",
+      "name": "ArchimedesApplication",
+      "request": "launch",
+      "mainClass": "com.example.archimedes.ArchimedesApplication",
+      "projectName": "Archimedes"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-AuthForgeApplication<AuthForge>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.authforge.AuthForgeApplication",
+      "projectName": "AuthForge",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

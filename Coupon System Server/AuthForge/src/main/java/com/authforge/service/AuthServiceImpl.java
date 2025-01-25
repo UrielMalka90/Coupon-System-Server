@@ -1,18 +1,19 @@
 package com.authforge.service;
 
-import com.authforge.data.entity.User;
-import com.authforge.data.repository.UserRepository;
-import com.authforge.web.dto.UserDto;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.authforge.data.entity.User;
+import com.authforge.data.repository.UserRepository;
+import com.authforge.web.dto.UserDto;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -25,75 +26,90 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthForgeService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
-    @Value("${jwt.expiration.millis}")
-    private long jwtExpirationMillis;
+  @Value("${jwt.expiration.millis}")
+  private long jwtExpirationMillis;
 
-    @Override
-    public String authenticateAndGenerateToken(String username,
-                                               String password) throws AuthException {
-        Optional<User> optUser = userRepository.findByUsername(username);
-        if (optUser.isEmpty() || !passwordEncoder.matches(password,
-                                                          optUser.get().getBcryptPassword())) {
-            throw new AuthException("Authentication failed");
-        }
-
-        User user = optUser.get();
-
-        return generateJwtToken(user.getUsername(), user.getUuid());
+  @Override
+  public String authenticateAndGenerateToken(String username,
+      String password) throws AuthException {
+    Optional<User> optUser = userRepository.findByUsername(username);
+    if (optUser.isEmpty() || !passwordEncoder.matches(password,
+        optUser.get().getBcryptPassword())) {
+      throw new AuthException("Authentication failed");
     }
 
-    @Override
-    public UserDto parseTokenAndGetUser(String token) {
-        // Fetch the JWT secret from environment variables
-        String jwtSecret = System.getenv("JWT_SECRET");
+    User user = optUser.get();
 
-        Jws<Claims> claimsJws = Jwts.parserBuilder()
-                .setSigningKey(jwtSecret.getBytes())
-                .build()
-                .parseClaimsJws(token);
+    return generateJwtToken(user.getUsername(), user.getUuid());
+  }
 
-        Claims claims = claimsJws.getBody();
+  @Override
+  public UserDto parseTokenAndGetUser(String token) {
+    // Fetch the JWT secret from environment variables
+    String jwtSecret = System.getenv("JWT_SECRET");
 
+    Jws<Claims> claimsJws = Jwts.parserBuilder()
+        .setSigningKey(jwtSecret.getBytes())
+        .build()
+        .parseClaimsJws(token);
 
-        String username = claims.get("username", String.class);
-        String uuidStr = claims.get("uuid", String.class);
+    Claims claims = claimsJws.getBody();
 
-        return new UserDto(username, UUID.fromString(uuidStr));
+    String username = claims.get("username", String.class);
+    String uuidStr = claims.get("uuid", String.class);
+
+    return new UserDto(username, UUID.fromString(uuidStr));
+  }
+
+  @Override
+  public boolean signUp(String username, String password) {
+
+    Optional<User> optUser = userRepository.findByUsername(username);
+    if (optUser.isPresent()) {
+      return false;
     }
 
-    @Override
-    public boolean signUp(String username, String password) {
+    User newUser = User.builder()
+        .username(username)
+        .bcryptPassword(passwordEncoder.encode(password))
+        .build();
 
-        Optional<User> optUser = userRepository.findByUsername(username);
-        if (optUser.isPresent()) {
-            return false;
-        }
+    userRepository.save(newUser);
+    return true;
+  }
 
-        User newUser = User.builder()
-                .username(username)
-                .bcryptPassword(passwordEncoder.encode(password))
-                .build();
+  private String generateJwtToken(String username, UUID uuid) {
+    Date expirationDate = new Date(System.currentTimeMillis() + jwtExpirationMillis);
+    Map<String, Object> claims = new HashMap<>();
+    claims.put("username", username);
+    claims.put("uuid", uuid);
 
-        userRepository.save(newUser);
-        return true;
+    return Jwts.builder()
+        .setClaims(claims)
+        .setSubject(username)
+        .setIssuedAt(new Date())
+        .setExpiration(expirationDate)
+        .signWith(Keys.hmacShaKeyFor(System.getenv("JWT_SECRET").getBytes()))
+        .compact();
+  }
+
+  @Override
+  @Transactional
+  public void updateDetails(String token, String username, String password) {
+    UserDto userDto = parseTokenAndGetUser(token);
+    User userFromDb = userRepository.findById(userDto.getUuid()).orElseThrow(
+        () -> new RuntimeException("User not found"));
+
+    if (userRepository.existsByUsernameAndUuidNot(username, userDto.getUuid())) {
+      throw new RuntimeException("Username already exists");
     }
 
-    private String generateJwtToken(String username, UUID uuid) {
-        Date expirationDate = new Date(System.currentTimeMillis() + jwtExpirationMillis);
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("username", username);
-        claims.put("uuid", uuid);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(expirationDate)
-                .signWith(Keys.hmacShaKeyFor(System.getenv("JWT_SECRET").getBytes()))
-                .compact();
-    }
+    userFromDb.setUsername(username);
+    userFromDb.setBcryptPassword(passwordEncoder.encode(password));
+    userRepository.saveAndFlush(userFromDb);
+  }
 
 }

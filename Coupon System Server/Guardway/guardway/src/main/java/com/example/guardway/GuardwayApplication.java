@@ -8,6 +8,7 @@ public class GuardwayApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GuardwayApplication.class, args);
+        System.out.println("Guardway is running...");
     }
 
 }

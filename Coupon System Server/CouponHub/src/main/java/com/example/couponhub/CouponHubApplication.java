@@ -10,6 +10,7 @@ public class CouponHubApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CouponHubApplication.class, args);
+        System.out.println("CouponHub is running...");
     }
     @Bean
     public RestTemplate restTemplate() {

@@ -1,8 +1,9 @@
 package com.example.couponhub.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.example.couponhub.data.dto.CouponDto;
 import com.example.couponhub.data.entity.CouponEntity;
-import org.springframework.stereotype.Component;
 
 @Component
 public class CouponMapperImpl implements CouponMapper {
@@ -17,6 +18,7 @@ public class CouponMapperImpl implements CouponMapper {
                 .endDate(entity.getEndDate())
                 .price(entity.getPrice())
                 .image(entity.getImage())
+                .amount(entity.getAmount())
                 .category(entity.getCategory())
                 .build();
     }
@@ -32,6 +34,7 @@ public class CouponMapperImpl implements CouponMapper {
                 .endDate(dto.getEndDate())
                 .price(dto.getPrice())
                 .image(dto.getImage())
+                .amount(dto.getAmount())
                 .category(dto.getCategory())
                 .build();
     }

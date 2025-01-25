@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Archimedes/Archimedes.iml" filepath="$PROJECT_DIR$/Archimedes/Archimedes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AuthForge/AuthForge.iml" filepath="$PROJECT_DIR$/AuthForge/AuthForge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Coupon System Server.iml" filepath="$PROJECT_DIR$/.idea/Coupon System Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CouponHub/CouponHub.iml" filepath="$PROJECT_DIR$/CouponHub/CouponHub.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CustomerConnect/CustomerConnect.iml" filepath="$PROJECT_DIR$/CustomerConnect/CustomerConnect.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Guardway/guardway/guardway.iml" filepath="$PROJECT_DIR$/Guardway/guardway/guardway.iml" />
+    </modules>
+  </component>
+</project>
